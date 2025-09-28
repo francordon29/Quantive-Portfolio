@@ -25,7 +25,7 @@ It was originally built as a learning project and has been optimized for **perfo
 ## 🚀 Performance
 - Lighthouse scores after optimization:
   - **Desktop:** 99/100
-  - **Mobile:** 90+/100
+  - **Mobile:** 84+/100
 - Improvements achieved with:
   - Responsive image handling (WebP variants)
   - Gradient background for mobile
