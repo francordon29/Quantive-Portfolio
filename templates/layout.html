@@ -6,10 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Quantive Portfolio{% endblock %}</title>
 
-  <!-- Meta description para SEO -->
   <meta name="description" content="Quantive Portfolio - Track and manage your investments with ease. Analyze stocks, buy, sell, and grow your portfolio with smart insights.">
 
-  <!-- Tailwind debe ir sin defer -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +22,7 @@
   <!-- Background -->
   <div class="fixed inset-0 -z-10">
     <picture>
-      <!-- Mobile: solo 480px -->
+      <!-- Mobile: 480px -->
       <source
         type="image/webp"
         srcset="{{ url_for('static', filename='img/pexels-photo-373893-480.webp') }}"
@@ -56,7 +54,6 @@
 
         <!-- Logo + Brand -->
         <a href="/" class="flex items-center">
-          <!-- 3 Bars only -->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"
             class="h-7 w-7">
             <rect x="6" y="40" width="8" height="18" rx="1" fill="#A5B4FC" />
@@ -143,7 +140,6 @@
     </p>
   </footer>
 
-  <!-- Configuración de Tailwind y scripts propios -->
   <script defer>
     tailwind.config = {
       theme: {
