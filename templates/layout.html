@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Quantive Portfolio{% endblock %}</title>
 
+  <!-- SEO -->
   <meta name="description" content="Quantive Portfolio - Track and manage your investments with ease. Analyze stocks, buy, sell, and grow your portfolio with smart insights.">
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -21,21 +22,15 @@
 
   <!-- Background -->
   <div class="fixed inset-0 -z-10">
-    <picture>
-      <!-- Mobile: 480px -->
-      <source
-        type="image/webp"
-        srcset="{{ url_for('static', filename='img/pexels-photo-373893-480.webp') }}"
-        media="(max-width: 768px)">
+    <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 md:hidden"></div>
 
-      <!-- Desktop: 800 y 1200px -->
+    <!-- Desktop: overlay -->
+    <picture class="hidden md:block">
       <source
         type="image/webp"
         srcset="{{ url_for('static', filename='img/pexels-photo-373893-800.webp') }} 800w,
                 {{ url_for('static', filename='img/pexels-photo-373893-1200.webp') }} 1200w"
         sizes="100vw">
-
-      <!-- Fallback -->
       <img
         src="{{ url_for('static', filename='img/pexels-photo-373893-800.webp') }}"
         alt="City skyline background"
@@ -43,6 +38,7 @@
         loading="eager"
         decoding="async">
     </picture>
+
     <div class="absolute inset-0 bg-black/60"></div>
   </div>
   
@@ -140,6 +136,7 @@
     </p>
   </footer>
 
+  <!-- Tailwind and Scripts -->
   <script defer>
     tailwind.config = {
       theme: {
