@@ -1,0 +1,206 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ quote.symbol }} Analysis - Quantive Portfolio
+{% endblock %}
+
+{% block content %}
+<div class="bg-gray-900/70 backdrop-blur-md rounded-xl shadow-lg p-6 border border-gray-700">
+    <!-- Header -->
+    <div class="border-b border-gray-700 pb-4 mb-6">
+        <h1 class="text-3xl font-bold text-white">{{ quote.name }} ({{ quote.symbol }})</h1>
+        <div class="flex items-center mt-2">
+            <p class="text-4xl font-bold text-indigo-400 mr-4">{{ quote.price | usd }}</p>
+            <div id="header-change" class="text-xl font-semibold">
+                <span id="header-change-abs"></span>
+                <span id="header-change-pct"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="mb-8">
+        <div class="flex justify-center items-center mb-4 space-x-2">
+            <button class="time-range-btn bg-indigo-600 text-white px-3 py-1 rounded-md text-sm" data-range="1m">1M</button>
+            <button class="time-range-btn bg-gray-700 text-gray-300 px-3 py-1 rounded-md text-sm" data-range="6m">6M</button>
+            <button class="time-range-btn bg-gray-700 text-gray-300 px-3 py-1 rounded-md text-sm" data-range="1y">1Y</button>
+            <button class="time-range-btn bg-gray-700 text-gray-300 px-3 py-1 rounded-md text-sm" data-range="5y">5Y</button>
+        </div>
+        <div class="relative h-96">
+            <canvas id="historicalChart"></canvas>
+        </div>
+        <p id="chart-error" class="text-center text-gray-400 mt-4 hidden">
+            Historical data is currently unavailable for this stock.
+        </p>
+    </div>
+
+    <!-- News -->
+    <div>
+        <h2 class="text-2xl font-bold text-white mb-4">Recent News</h2>
+        <div class="space-y-4">
+            {% for item in news %}
+                <div class="p-4 bg-gray-800/70 rounded-lg border border-gray-700 hover:bg-gray-800 transition-colors">
+                    <a href="{{ item.url }}" target="_blank" class="block">
+                        <h3 class="font-semibold text-indigo-400">{{ item.title }}</h3>
+                        <p class="text-sm text-gray-300 mt-1">
+                            {{ item.description | truncate(150) if item.description }}
+                        </p>
+                        <p class="text-xs text-gray-500 mt-2">
+                            {{ item.source.name }} - {{ item.publishedAt }}
+                        </p>
+                    </a>
+                </div>
+            {% else %}
+                <p class="text-gray-400">No recent news found for this stock.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+<!-- Data injection -->
+<script id="page-data" type="application/json">
+    {
+        "historical": {{ historical_data | tojson | safe }},
+        "quote": {
+            "price": {{ quote.price if quote.price is not none else 'null' }},
+            "previous_close": {{ quote.previous_close if quote.previous_close is not none else 'null' }}
+        }
+    }
+</script>
+
+<!-- Chart logic -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        const dataElement = document.getElementById('page-data');
+        const chartCanvas = document.getElementById('historicalChart');
+        const chartErrorEl = document.getElementById('chart-error');
+
+        if (!dataElement || !chartCanvas) return;
+
+        const pageData = JSON.parse(dataElement.textContent);
+        const historicalDict = pageData.historical;
+        const quoteData = pageData.quote;
+
+        const allLabels = Object.keys(historicalDict).sort();
+        const allData = allLabels.map(date => historicalDict[date]);
+
+        const timeRangeButtons = document.querySelectorAll('.time-range-btn');
+        const headerChangeDiv = document.getElementById('header-change');
+        const absEl = document.getElementById('header-change-abs');
+        const pctEl = document.getElementById('header-change-pct');
+        let historicalChart = null;
+
+        function updateHeader(dataPoints) {
+            let changeAbs = 0;
+            let changePct = 0;
+
+            if (!dataPoints || dataPoints.length < 2) {
+                const currentPrice = quoteData.price;
+                const prevClose = quoteData.previous_close;
+                if (typeof currentPrice === 'number' && typeof prevClose === 'number') {
+                    changeAbs = currentPrice - prevClose;
+                    changePct = prevClose > 0 ? (changeAbs / prevClose) * 100 : 0;
+                }
+            } else {
+                const firstPrice = dataPoints[0];
+                const lastPrice = dataPoints[dataPoints.length - 1];
+                if (typeof firstPrice === 'number' && typeof lastPrice === 'number') {
+                    changeAbs = lastPrice - firstPrice;
+                    changePct = firstPrice > 0 ? (changeAbs / firstPrice) * 100 : 0;
+                }
+            }
+
+            absEl.textContent = changeAbs.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            pctEl.textContent = ` (${changePct.toFixed(2)}%)`;
+
+            headerChangeDiv.className = 'text-xl font-semibold';
+            if (changeAbs > 0) headerChangeDiv.classList.add('text-green-500');
+            else if (changeAbs < 0) headerChangeDiv.classList.add('text-red-500');
+            else headerChangeDiv.classList.add('text-gray-300');
+        }
+
+        function filterDataByRange(range) {
+            const endDate = new Date(allLabels[allLabels.length - 1]);
+            let startDate = new Date(endDate);
+
+            if (range === '1m') startDate.setMonth(endDate.getMonth() - 1);
+            else if (range === '6m') startDate.setMonth(endDate.getMonth() - 6);
+            else if (range === '1y') startDate.setFullYear(endDate.getFullYear() - 1);
+            else if (range === '5y') startDate.setFullYear(endDate.getFullYear() - 5);
+
+            const startIndex = allLabels.findIndex(label => new Date(label) >= startDate);
+
+            const filteredLabels = allLabels.slice(startIndex);
+            const filteredData = allData.slice(startIndex);
+
+            if (historicalChart) {
+                historicalChart.data.labels = filteredLabels;
+                historicalChart.data.datasets[0].data = filteredData;
+                historicalChart.update();
+            }
+
+            updateHeader(filteredData);
+        }
+
+        if (!allLabels || allLabels.length === 0) {
+            chartCanvas.style.display = 'none';
+            chartErrorEl.classList.remove('hidden');
+            updateHeader(null);
+        } else {
+            const ctx = chartCanvas.getContext('2d');
+            historicalChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: allLabels,
+                    datasets: [{
+                        label: 'Close Price ($)',
+                        data: allData,
+                        borderColor: 'rgb(99, 102, 241)', // Indigo
+                        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                        fill: true,
+                        tension: 0.1,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        x: { type: 'time', time: { unit: 'day' }, ticks: { color: '#d1d5db' } },
+                        y: { title: { display: true, text: 'Price ($)', color: '#d1d5db' }, ticks: { color: '#d1d5db' } }
+                    },
+                    plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } }
+                }
+            });
+
+            timeRangeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    timeRangeButtons.forEach(btn => {
+                        btn.classList.remove('bg-indigo-600', 'text-white');
+                        btn.classList.add('bg-gray-700', 'text-gray-300');
+                    });
+                    button.classList.add('bg-indigo-600', 'text-white');
+                    button.classList.remove('bg-gray-700', 'text-gray-300');
+                    filterDataByRange(button.dataset.range);
+                });
+            });
+
+            document.querySelector('.time-range-btn[data-range="1m"]').click();
+        }
+
+    } catch (error) {
+        console.error("A critical error occurred in the page script:", error);
+        const chartCanvas = document.getElementById('historicalChart');
+        const chartErrorEl = document.getElementById('chart-error');
+        if (chartCanvas) chartCanvas.style.display = 'none';
+        if (chartErrorEl) chartErrorEl.classList.remove('hidden');
+    }
+});
+</script>
+{% endblock %}

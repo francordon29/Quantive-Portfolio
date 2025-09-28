@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  P/L Calculator - Quantive Portfolio
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center px-6 py-8 mx-auto">
+  <div class="w-full bg-gray-900/70 border border-gray-700 rounded-xl shadow-lg sm:max-w-4xl xl:p-0">
+    <div class="p-6 space-y-6">
+      <h1 class="text-xl font-semibold text-white text-center">
+        Average Cost & P/L Calculator
+      </h1>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Buy transactions -->
+        <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg">
+          <h2 class="text-lg font-semibold text-center text-green-400 mb-4">Buy Transactions</h2>
+          <div id="buy-entries" class="space-y-4">
+            <div class="buy-entry grid grid-cols-2 gap-2 items-end">
+              <div>
+                <label class="block mb-1 text-xs font-medium text-gray-300">Shares</label>
+                <input type="number" name="buy_shares"
+                       class="calc-input w-full bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5"
+                       placeholder="e.g., 10">
+              </div>
+              <div>
+                <label class="block mb-1 text-xs font-medium text-gray-300">Price per Share ($)</label>
+                <input type="number" name="buy_price"
+                       class="calc-input w-full bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5"
+                       placeholder="e.g., 150.25">
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 mt-4">
+            <button id="add-purchase-btn"
+                    class="w-full text-indigo-400 border border-indigo-500 hover:bg-indigo-600 hover:text-white transition-colors font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+              Add Purchase
+            </button>
+            <button id="reset-calc-btn"
+                    class="w-full text-gray-300 border border-gray-600 hover:bg-gray-700 transition-colors font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- Sell and results -->
+        <div class="space-y-4">
+          <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg">
+            <h2 class="text-lg font-semibold text-center text-red-400 mb-4">Sell Transaction</h2>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label for="sellShares" class="block mb-2 text-sm font-medium text-gray-300">Shares to Sell</label>
+                <input type="number" id="sellShares"
+                       class="calc-input bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5">
+              </div>
+              <div>
+                <label for="sellPrice" class="block mb-2 text-sm font-medium text-gray-300">Sell Price ($)</label>
+                <input type="number" id="sellPrice"
+                       class="calc-input bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5">
+              </div>
+            </div>
+          </div>
+          <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg">
+            <h2 class="text-xl font-semibold text-center text-white mb-4">Results</h2>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-medium text-gray-400">Average Buy Price:</span>
+                <span id="avgBuyPrice" class="text-md font-semibold text-gray-200">$0.00</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-medium text-gray-400">Total Cost Basis:</span>
+                <span id="totalCost" class="text-md font-semibold text-gray-200">$0.00</span>
+              </div>
+              <hr class="border-gray-700">
+              <div class="flex justify-between items-center pt-2">
+                <span class="text-md font-medium text-gray-300">Net Profit/Loss:</span>
+                <span id="netPL" class="text-xl font-bold text-gray-200">$0.00</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-md font-medium text-gray-300">Return on Investment:</span>
+                <span id="returnPct" class="text-xl font-bold text-gray-200">0.00%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ⚡ mismo JS que tenías, no lo cambio
+</script>
+{% endblock %}

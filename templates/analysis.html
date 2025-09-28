@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  Stock Analysis - Quantive Portfolio
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center px-6 py-8 mx-auto">
+  <div class="w-full bg-gray-900/70 border border-gray-700 rounded-xl shadow-lg md:mt-0 sm:max-w-md xl:p-0">
+    <div class="p-6 space-y-6">
+      <h1 class="text-xl font-semibold tracking-wide text-white text-center">
+        Analyze a Stock
+      </h1>
+      <p class="text-sm text-gray-300 text-center">
+        Enter a stock symbol to see detailed charts and news.
+      </p>
+
+      <form id="analysis-form" class="space-y-4">
+        <div class="relative">
+          <label for="symbol" class="block mb-2 text-sm font-medium text-gray-200">Stock Symbol</label>
+          <input type="text" name="symbol" id="symbol"
+                 class="bg-gray-800 border border-gray-700 text-gray-200 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+                 placeholder="e.g., AAPL, GOOG" required autocomplete="off" autofocus>
+          <div id="suggestions" class="absolute z-10 w-full bg-gray-800 border border-gray-700 rounded-lg mt-1 hidden max-h-48 overflow-y-auto text-gray-200"></div>
+        </div>
+
+        <button type="submit"
+                class="w-full text-white bg-indigo-600 hover:bg-indigo-500 transition-colors font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+          Analyze
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const symbolInput = document.getElementById('symbol');
+  const suggestionsBox = document.getElementById('suggestions');
+  const analysisForm = document.getElementById('analysis-form');
+  let debounceTimer;
+
+  symbolInput.addEventListener('keyup', (e) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      const query = e.target.value;
+      if (query.length < 2) {
+        suggestionsBox.innerHTML = '';
+        suggestionsBox.classList.add('hidden');
+        return;
+      }
+      const response = await fetch(`/search?q=${query}`);
+      const matches = await response.json();
+      if (matches.length > 0) {
+        const html = matches.map(match => `
+          <div class="p-2 hover:bg-gray-700 cursor-pointer" data-symbol="${match.symbol}">
+            <span class="font-bold text-indigo-400">${match.symbol}</span>
+            <span class="text-sm text-gray-400 ml-2">${match.name}</span>
+          </div>
+        `).join('');
+        suggestionsBox.innerHTML = html;
+        suggestionsBox.classList.remove('hidden');
+      } else {
+        suggestionsBox.innerHTML = '';
+        suggestionsBox.classList.add('hidden');
+      }
+    }, 300);
+  });
+
+  suggestionsBox.addEventListener('click', (e) => {
+    let target = e.target.closest('div[data-symbol]');
+    if (target && target.dataset.symbol) {
+      symbolInput.value = target.dataset.symbol;
+      suggestionsBox.innerHTML = '';
+      suggestionsBox.classList.add('hidden');
+    }
+  });
+
+  analysisForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const symbol = symbolInput.value.trim().toUpperCase();
+    if (symbol) {
+      window.location.href = `/stock/${symbol}`;
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!symbolInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+      suggestionsBox.classList.add('hidden');
+    }
+  });
+</script>
+{% endblock %}
