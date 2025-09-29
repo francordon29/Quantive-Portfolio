@@ -16,10 +16,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Preload CSS -->
-  <link rel="preload" as="style" href="{{ url_for('static', filename='css/app.css', v=STATIC_VERSION) }}" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="{{ url_for('static', filename='css/app.css', v=STATIC_VERSION) }}"></noscript>
-
   <!-- Critical CSS inline -->
   <style>
     body { margin:0; background:#0b1220; color:#e8ebf0; }
@@ -42,14 +38,14 @@
       <!-- Mobile -->
       <source
         type="image/webp"
-        srcset="{{ url_for('static', filename='img/pexels-photo-373893-489.webp') }}"
+        srcset="{{ url_for('static', filename='img/-489.webp') }}"
         media="(max-width: 768px)">
 
       <!-- Desktop -->
       <source
         type="image/webp"
-        srcset="{{ url_for('static', filename='img/pexels-photo-373893-800.webp') }} 800w,
-                {{ url_for('static', filename='img/pexels-photo-373893-1200.webp') }} 1200w"
+        srcset="{{ url_for('static', filename='img/-800.webp') }} 800w,
+                {{ url_for('static', filename='img/-1200.webp') }} 1200w"
         sizes="100vw">
 
       <!-- Fallback JPG -->
@@ -148,7 +144,7 @@
     </p>
   </footer>
 
-  <!-- Tailwind and Scripts -->
+  <!-- Scripts -->
   <script defer>
     tailwind.config = {
       theme: {
@@ -158,6 +154,11 @@
       },
     }
   </script>
+
+  <!-- App base JS -->
+  <script defer src="{{ url_for('static', filename='js/app.js', v=STATIC_VERSION) }}"></script>
+  <!-- Lazy load charts -->
+  <script type="module" defer src="{{ url_for('static', filename='js/lazy-init.js', v=STATIC_VERSION) }}"></script>
 
   <script defer>
     document.getElementById('mobile-menu-button').addEventListener('click', () => {
