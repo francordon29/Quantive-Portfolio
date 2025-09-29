@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Critical CSS inline-->
+  <!-- Critical CSS inline -->
   <style>
     body { margin:0; background:#0b1220; color:#e8ebf0; }
     .hero-bg {
@@ -52,7 +52,7 @@
       <img
         src="{{ url_for('static', filename='img/pexels-photo-373893.jpeg') }}"
         alt="City skyline background"
-        class="w-full h-full object-cover"
+        class="absolute inset-0 w-full h-full object-cover"
         loading="eager"
         decoding="async">
     </picture>
@@ -155,9 +155,12 @@
     }
   </script>
 
-  <!-- Lazy load charts -->
-  <script type="module" defer src="{{ url_for('static', filename='js/lazy-init.js', v=STATIC_VERSION) }}"></script>
+  {% if session.user_id %}
+    <!-- Only for logged users -->
+    <script type="module" defer src="{{ url_for('static', filename='js/lazy-init.js', v=STATIC_VERSION) }}"></script>
+  {% endif %}
 
+  <!-- Mobile -->
   <script defer>
     document.getElementById('mobile-menu-button').addEventListener('click', () => {
       document.getElementById('mobile-menu').classList.toggle('hidden');
