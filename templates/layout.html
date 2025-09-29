@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,22 +11,38 @@
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Preload CSS -->
+  <link rel="preload" as="style" href="{{ url_for('static', filename='css/app.css', v=STATIC_VERSION) }}" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{{ url_for('static', filename='css/app.css', v=STATIC_VERSION) }}"></noscript>
+
+  <!-- Critical CSS inline -->
+  <style>
+    body { margin:0; background:#0b1220; color:#e8ebf0; }
+    .hero-bg {
+      min-height: 100vh;
+      display:grid;
+      place-items:center;
+      background:
+        radial-gradient(1200px 600px at 50% -10%, rgba(255,255,255,.06), transparent 60%),
+        linear-gradient(180deg,#0b1220 0%, #05070d 100%);
+    }
+  </style>
 </head>
 
 <body class="h-full flex flex-col text-gray-200 relative">
 
   <!-- Background -->
-  <div class="fixed inset-0 -z-10">
+  <div class="fixed inset-0 -z-10 hero-bg">
     <picture>
-      <!-- Mobile-->
+      <!-- Mobile -->
       <source
         type="image/webp"
-        srcset="{{ url_for('static', filename='img/pexels-photo-373893-480.webp') }}"
+        srcset="{{ url_for('static', filename='img/pexels-photo-373893-489.webp') }}"
         media="(max-width: 768px)">
 
       <!-- Desktop -->
@@ -37,9 +52,9 @@
                 {{ url_for('static', filename='img/pexels-photo-373893-1200.webp') }} 1200w"
         sizes="100vw">
 
-      <!-- Fallback -->
+      <!-- Fallback JPG -->
       <img
-        src="{{ url_for('static', filename='img/pexels-photo-373893-800.webp') }}"
+        src="{{ url_for('static', filename='img/pexels-photo-373893.jpg') }}"
         alt="City skyline background"
         class="w-full h-full object-cover"
         loading="eager"
@@ -49,17 +64,15 @@
     <!-- Overlay -->
     <div class="absolute inset-0 bg-black/60"></div>
   </div>
-  
+
   <!-- Header -->
-  <header
-    class="bg-gray-900 bg-opacity-80 shadow-md backdrop-blur-sm sticky top-0 z-20">
+  <header class="bg-gray-900 bg-opacity-80 shadow-md backdrop-blur-sm sticky top-0 z-20">
     <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex h-16 items-center justify-between">
 
         <!-- Logo + Brand -->
         <a href="/" class="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"
-            class="h-7 w-7">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="h-7 w-7">
             <rect x="6" y="40" width="8" height="18" rx="1" fill="#A5B4FC" />
             <rect x="20" y="28" width="8" height="30" rx="1" fill="#818CF8" />
             <rect x="34" y="16" width="8" height="42" rx="1" fill="#6366F1" />
@@ -78,16 +91,13 @@
           <a href="{{ url_for('calculator') }}" class="hover:text-white">Calculator</a>
           <a href="{{ url_for('logout') }}" class="hover:text-white">Log Out</a>
           {% else %}
-          <a href="{{ url_for('login') }}"
-             class="bg-indigo-600 px-3 py-2 rounded text-white hover:bg-indigo-500">Log In</a>
-          <a href="{{ url_for('register') }}"
-             class="bg-indigo-600 px-3 py-2 rounded text-white hover:bg-indigo-500">Register</a>
+          <a href="{{ url_for('login') }}" class="bg-indigo-600 px-3 py-2 rounded text-white hover:bg-indigo-500">Log In</a>
+          <a href="{{ url_for('register') }}" class="bg-indigo-600 px-3 py-2 rounded text-white hover:bg-indigo-500">Register</a>
           {% endif %}
         </div>
 
         <!-- Mobile menu button -->
-        <button id="mobile-menu-button"
-          class="md:hidden text-gray-300 hover:text-white">
+        <button id="mobile-menu-button" class="md:hidden text-gray-300 hover:text-white">
           ☰
         </button>
       </div>
@@ -116,10 +126,9 @@
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
       {% for category, message in messages %}
-      <div
-        class="rounded-md p-4 mb-4 text-white 
-                        {% if category == 'success' %}bg-green-500 bg-opacity-40 border border-green-500
-                        {% else %}bg-red-500 bg-opacity-40 border border-red-500{% endif %}">
+      <div class="rounded-md p-4 mb-4 text-white 
+                  {% if category == 'success' %}bg-green-500 bg-opacity-40 border border-green-500
+                  {% else %}bg-red-500 bg-opacity-40 border border-red-500{% endif %}">
         {{ message }}
       </div>
       {% endfor %}
@@ -131,16 +140,11 @@
   </main>
 
   <!-- Footer -->
-  <footer
-    class="text-center py-6 text-gray-400 text-sm bg-gray-900 bg-opacity-80 backdrop-blur-sm z-20">
+  <footer class="text-center py-6 text-gray-400 text-sm bg-gray-900 bg-opacity-80 backdrop-blur-sm z-20">
     <p>&copy; 2025 Quantive Portfolio. All rights reserved.</p>
     <p class="mt-1">
-      Market data by <a
-        href="https://financialmodelingprep.com/developer/docs/"
-        target="_blank"
-        class="text-indigo-400 hover:underline">Financial Modeling Prep</a>.
-      News by <a href="https://newsapi.org/" target="_blank"
-        class="text-indigo-400 hover:underline">NewsAPI.org</a>.
+      Market data by <a href="https://financialmodelingprep.com/developer/docs/" target="_blank" class="text-indigo-400 hover:underline">Financial Modeling Prep</a>.
+      News by <a href="https://newsapi.org/" target="_blank" class="text-indigo-400 hover:underline">NewsAPI.org</a>.
     </p>
   </footer>
 
