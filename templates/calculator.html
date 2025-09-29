@@ -21,13 +21,13 @@
               <div>
                 <label class="block mb-1 text-xs font-medium text-gray-300">Shares</label>
                 <input type="number" name="buy_shares"
-                       class="calc-input w-full bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5"
+                       class="calc-input no-spin w-full bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5"
                        placeholder="e.g., 10">
               </div>
               <div>
                 <label class="block mb-1 text-xs font-medium text-gray-300">Price per Share ($)</label>
                 <input type="number" name="buy_price"
-                       class="calc-input w-full bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5"
+                       class="calc-input no-spin w-full bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5"
                        placeholder="e.g., 150.25">
               </div>
             </div>
@@ -48,16 +48,16 @@
         <div class="space-y-4">
           <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg">
             <h2 class="text-lg font-semibold text-center text-red-400 mb-4">Sell Transaction</h2>
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label for="sellShares" class="block mb-2 text-sm font-medium text-gray-300">Shares to Sell</label>
                 <input type="number" id="sellShares"
-                       class="calc-input bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5">
+                       class="calc-input no-spin w-full bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5">
               </div>
               <div>
                 <label for="sellPrice" class="block mb-2 text-sm font-medium text-gray-300">Sell Price ($)</label>
                 <input type="number" id="sellPrice"
-                       class="calc-input bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5">
+                       class="calc-input no-spin w-full bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5">
               </div>
             </div>
           </div>
@@ -89,6 +89,128 @@
   </div>
 </div>
 
+<style>
+.no-spin::-webkit-inner-spin-button,
+.no-spin::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.no-spin {
+  -moz-appearance: textfield;
+}
+</style>
+
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const buyEntries = document.getElementById("buy-entries");
+  const addBtn = document.getElementById("add-purchase-btn");
+  const resetBtn = document.getElementById("reset-calc-btn");
+
+  const avgBuyPrice = document.getElementById("avgBuyPrice");
+  const totalCost = document.getElementById("totalCost");
+  const netPL = document.getElementById("netPL");
+  const returnPct = document.getElementById("returnPct");
+
+  const sellShares = document.getElementById("sellShares");
+  const sellPrice = document.getElementById("sellPrice");
+
+  // Add new buy entry
+  addBtn.addEventListener("click", () => {
+    const entry = document.createElement("div");
+    entry.className = "buy-entry grid grid-cols-2 gap-2 items-end";
+    entry.innerHTML = `
+      <div>
+        <label class="block mb-1 text-xs font-medium text-gray-300">Shares</label>
+        <input type="number" name="buy_shares"
+               class="calc-input no-spin w-full bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5"
+               placeholder="e.g., 10">
+      </div>
+      <div>
+        <label class="block mb-1 text-xs font-medium text-gray-300">Price per Share ($)</label>
+        <input type="number" name="buy_price"
+               class="calc-input no-spin w-full bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5"
+               placeholder="e.g., 150.25">
+      </div>
+    `;
+    buyEntries.appendChild(entry);
+    calculate();
+  });
+
+  // Reset everything
+  resetBtn.addEventListener("click", () => {
+    buyEntries.innerHTML = `
+      <div class="buy-entry grid grid-cols-2 gap-2 items-end">
+        <div>
+          <label class="block mb-1 text-xs font-medium text-gray-300">Shares</label>
+          <input type="number" name="buy_shares"
+                 class="calc-input no-spin w-full bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5"
+                 placeholder="e.g., 10">
+        </div>
+        <div>
+          <label class="block mb-1 text-xs font-medium text-gray-300">Price per Share ($)</label>
+          <input type="number" name="buy_price"
+                 class="calc-input no-spin w-full bg-gray-900 border border-gray-700 text-gray-200 sm:text-sm rounded-lg p-2.5"
+                 placeholder="e.g., 150.25">
+        </div>
+      </div>
+    `;
+    sellShares.value = "";
+    sellPrice.value = "";
+    avgBuyPrice.textContent = "$0.00";
+    totalCost.textContent = "$0.00";
+    netPL.textContent = "$0.00";
+    netPL.className = "text-xl font-bold text-gray-200";
+    returnPct.textContent = "0.00%";
+    returnPct.className = "text-xl font-bold text-gray-200";
+  });
+
+  // Recalculate on input changes
+  document.addEventListener("input", calculate);
+
+  function calculate() {
+    const buyInputs = buyEntries.querySelectorAll(".buy-entry");
+    let totalShares = 0;
+    let totalInvestment = 0;
+
+    buyInputs.forEach(entry => {
+      const shares = parseFloat(entry.querySelector("input[name='buy_shares']").value) || 0;
+      const price = parseFloat(entry.querySelector("input[name='buy_price']").value) || 0;
+      totalShares += shares;
+      totalInvestment += shares * price;
+    });
+
+    const avgPrice = totalShares > 0 ? totalInvestment / totalShares : 0;
+    avgBuyPrice.textContent = `$${avgPrice.toFixed(2)}`;
+    totalCost.textContent = `$${totalInvestment.toFixed(2)}`;
+
+    const sellQty = parseFloat(sellShares.value) || 0;
+    const sellP = parseFloat(sellPrice.value) || 0;
+
+    if (sellQty > 0 && sellP > 0 && totalShares > 0) {
+      const revenue = sellQty * sellP;
+      const cost = sellQty * avgPrice;
+      const profit = revenue - cost;
+
+      netPL.textContent = `$${profit.toFixed(2)}`;
+      returnPct.textContent = `${((profit / cost) * 100).toFixed(2)}%`;
+
+      if (profit > 0) {
+        netPL.className = "text-xl font-bold text-green-400";
+        returnPct.className = "text-xl font-bold text-green-400";
+      } else if (profit < 0) {
+        netPL.className = "text-xl font-bold text-red-400";
+        returnPct.className = "text-xl font-bold text-red-400";
+      } else {
+        netPL.className = "text-xl font-bold text-gray-200";
+        returnPct.className = "text-xl font-bold text-gray-200";
+      }
+    } else {
+      netPL.textContent = "$0.00";
+      netPL.className = "text-xl font-bold text-gray-200";
+      returnPct.textContent = "0.00%";
+      returnPct.className = "text-xl font-bold text-gray-200";
+    }
+  }
+});
 </script>
 {% endblock %}
