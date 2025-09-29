@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Critical CSS inline -->
+  <!-- Critical CSS -->
   <style>
     body { margin:0; background:#0b1220; color:#e8ebf0; }
     .hero-bg {
@@ -35,18 +35,20 @@
   <!-- Background -->
   <div class="fixed inset-0 -z-10 hero-bg">
     <picture>
-      <!-- Mobile -->
+      <!-- Mobile optimized -->
       <source
         type="image/webp"
-        srcset="{{ url_for('static', filename='img/pexels-photo-373893-480-opt.webp') }}"
-        media="(max-width: 768px)">
+        srcset="{{ url_for('static', filename='img/pexels-photo-373893-480-ultra.webp') }}"
+        media="(max-width: 768px)"
+        loading="lazy">
 
       <!-- Desktop -->
       <source
         type="image/webp"
         srcset="{{ url_for('static', filename='img/pexels-photo-373893-800.webp') }} 800w,
                 {{ url_for('static', filename='img/pexels-photo-373893-1200.webp') }} 1200w"
-        sizes="100vw">
+        sizes="100vw"
+        loading="eager">
 
       <!-- Fallback JPG -->
       <img
@@ -156,11 +158,10 @@
   </script>
 
   {% if session.user_id %}
-    <!-- Only for logged users -->
     <script type="module" defer src="{{ url_for('static', filename='js/lazy-init.js', v=STATIC_VERSION) }}"></script>
   {% endif %}
 
-  <!-- Mobile -->
+  <!-- Mobile menu -->
   <script defer>
     document.getElementById('mobile-menu-button').addEventListener('click', () => {
       document.getElementById('mobile-menu').classList.toggle('hidden');
