@@ -38,7 +38,7 @@
       <!-- Mobile -->
       <source
         type="image/webp"
-        srcset="{{ url_for('static', filename='img/pexels-photo-373893-480.webp') }}"
+        srcset="{{ url_for('static', filename='img/pexels-photo-373893-480-opt.webp') }}"
         media="(max-width: 768px)">
 
       <!-- Desktop -->
@@ -155,8 +155,6 @@
     }
   </script>
 
-  <!-- App base JS -->
-  <script defer src="{{ url_for('static', filename='js/app.js', v=STATIC_VERSION) }}"></script>
   <!-- Lazy load charts -->
   <script type="module" defer src="{{ url_for('static', filename='js/lazy-init.js', v=STATIC_VERSION) }}"></script>
 

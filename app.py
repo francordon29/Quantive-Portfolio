@@ -5,10 +5,18 @@ from flask import Flask, flash, redirect, render_template, request, session, jso
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, timedelta, date
+from flask_compress import Compress
 
 from helpers import apology, login_required, lookup, usd, search_symbols, get_historical_data, get_stock_news
 
 app = Flask(__name__)
+
+Compress(app)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(days=365)
+STATIC_VERSION = "v4"
+@app.context_processor
+def inject_static_version():
+    return dict(STATIC_VERSION=STATIC_VERSION)
 
 api_cache = {}
 
