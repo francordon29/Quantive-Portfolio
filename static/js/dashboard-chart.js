@@ -4,33 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const chartData = JSON.parse(chartDataEl.textContent);
 
-  const canvases = [
-    document.getElementById("distributionChart"),
-    document.getElementById("growthChart"),
-  ].filter(Boolean);
-
-  if (canvases.length === 0) return;
-
-  const observer = new IntersectionObserver(async (entries, obs) => {
-    for (const entry of entries) {
-      if (entry.isIntersecting) {
-        const [{ Chart }, _] = await Promise.all([
-          import("https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"),
-          import("https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"),
-        ]);
-
-        initCharts(Chart, chartData);
-        obs.disconnect();
-        break;
-      }
-    }
-  }, { threshold: 0.2 });
-
-  canvases.forEach((canvas) => observer.observe(canvas));
-});
-
-function initCharts(Chart, chartData) {
-  // Asset Distribution Chart
+  // === Asset Distribution Chart ===
   if (chartData.distribution && chartData.distribution.labels.length > 0) {
     const ctxDist = document.getElementById("distributionChart").getContext("2d");
     new Chart(ctxDist, {
@@ -73,7 +47,7 @@ function initCharts(Chart, chartData) {
     });
   }
 
-  // Portfolio Growth Chart
+  // === Portfolio Growth Chart ===
   if (chartData.growth && chartData.growth.labels.length > 1) {
     const ctxGrowth = document.getElementById("growthChart").getContext("2d");
     new Chart(ctxGrowth, {
@@ -151,4 +125,4 @@ function initCharts(Chart, chartData) {
       },
     });
   }
-}
+});

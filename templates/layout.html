@@ -10,13 +10,30 @@
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Global styles -->
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    canvas {
+      outline: none;
+    }
+    a {
+      color: #a5b4fc;
+    }
+    a:hover {
+      color: #c7d2fe;
+    }
+  </style>
 </head>
 
-<body class="h-full flex flex-col text-gray-200 relative">
-
+<body class="h-full flex flex-col text-gray-200 relative bg-gray-900">
   <!-- Background -->
   <div class="fixed inset-0 -z-10">
     <picture>
@@ -35,10 +52,9 @@
       <img src="{{ url_for('static', filename='img/pexels-photo-373893.jpeg') }}"
         alt="City skyline background"
         class="w-full h-full object-cover"
-        loading="lazy"
+        loading="eager"
         decoding="async">
     </picture>
-    <div class="absolute inset-0 bg-black/60"></div>
   </div>
 
   <!-- Header -->
@@ -121,10 +137,16 @@
   </footer>
 
   <!-- Mobile menu script -->
-  <script defer>
+  <script>
     document.getElementById('mobile-menu-button').addEventListener('click', () => {
       document.getElementById('mobile-menu').classList.toggle('hidden');
     });
   </script>
+
+  <!-- Chart.js global -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js" defer></script>
+
+  {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -9,22 +9,22 @@
   <!-- Empty portfolio welcome -->
   <div class="text-center bg-gray-900/70 border border-gray-700 rounded-xl shadow-lg p-8 lg:p-12">
     <h2 class="mt-4 text-2xl font-semibold tracking-wide text-white">Welcome to Quantive Portfolio!</h2>
-    <p class="mt-4 text-lg leading-7 text-gray-300">You haven't logged any transactions yet. Let's get you started on tracking your investments.</p>
+    <p class="mt-4 text-lg leading-7 text-gray-200">You haven't logged any transactions yet. Let's get you started on tracking your investments.</p>
 
     <div class="mt-8 border-t border-gray-700 pt-8">
-      <h3 class="text-xl font-semibold text-white mb-4">What you can do:</h3>
+      <h2 class="text-xl font-semibold text-white mb-4">What you can do:</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
         <div class="bg-gray-900/70 border border-gray-700 rounded-xl p-6">
-          <h4 class="font-semibold text-indigo-400">Log Transactions</h4>
-          <p class="text-sm text-gray-300 mt-1">Use the 'Buy' and 'Sell' pages to add your past and present trades. See your portfolio come to life.</p>
+          <h3 class="font-semibold text-indigo-400">Log Transactions</h3>
+          <p class="text-sm text-gray-200 mt-1">Use the 'Buy' and 'Sell' pages to add your past and present trades. See your portfolio come to life.</p>
         </div>
         <div class="bg-gray-900/70 border border-gray-700 rounded-xl p-6">
-          <h4 class="font-semibold text-indigo-400">Analyze Stocks</h4>
-          <p class="text-sm text-gray-300 mt-1">Search for any ticker, view interactive charts, and read the latest news.</p>
+          <h3 class="font-semibold text-indigo-400">Analyze Stocks</h3>
+          <p class="text-sm text-gray-200 mt-1">Search for any ticker, view interactive charts, and read the latest news.</p>
         </div>
         <div class="bg-gray-900/70 border border-gray-700 rounded-xl p-6">
-          <h4 class="font-semibold text-indigo-400">Use the Calculator</h4>
-          <p class="text-sm text-gray-300 mt-1">Plan your next move with the P/L Calculator to estimate your profits.</p>
+          <h3 class="font-semibold text-indigo-400">Use the Calculator</h3>
+          <p class="text-sm text-gray-200 mt-1">Plan your next move with the P/L Calculator to estimate your profits.</p>
         </div>
       </div>
     </div>
@@ -50,17 +50,15 @@
     <!-- Quick stats -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center mb-8">
       <div class="bg-gray-900/70 border border-gray-700 rounded-xl p-6">
-        <h3 class="text-sm font-medium text-gray-300">Today's P/L</h3>
-        <div class="mt-1 text-2xl font-semibold {% if total_daily_pl > 0 %}text-green-400{% elif total_daily_pl < 0 %}text-red-400{% else %}text-gray-200{% endif %}">
-          <span>{{ total_daily_pl | usd }}</span>
-          <span class="text-lg ml-2">({{ "%.2f"|format(total_daily_pl_pct) }}%)</span>
+        <h2 class="text-sm font-medium text-gray-200">Today's P/L</h2>
+        <div class="mt-1 text-2xl {% if total_daily_pl > 0 %}text-green-400{% elif total_daily_pl < 0 %}text-red-400{% else %}text-gray-200{% endif %}">
+          {{ total_daily_pl | usd }} ({{ "%.2f"|format(total_daily_pl_pct) }}%)
         </div>
       </div>
       <div class="bg-gray-900/70 border border-gray-700 rounded-xl p-6">
-        <h3 class="text-sm font-medium text-gray-300">Total P/L</h3>
-        <div class="mt-1 text-2xl font-semibold {% if total_pl > 0 %}text-green-400{% elif total_pl < 0 %}text-red-400{% else %}text-gray-200{% endif %}">
-          <span>{{ total_pl | usd }}</span>
-          <span class="text-lg ml-2">({{ "%.2f"|format(total_pl_pct) }}%)</span>
+        <h2 class="text-sm font-medium text-gray-200">Total P/L</h2>
+        <div class="mt-1 text-2xl {% if total_pl > 0 %}text-green-400{% elif total_pl < 0 %}text-red-400{% else %}text-gray-200{% endif %}">
+          {{ total_pl | usd }} ({{ "%.2f"|format(total_pl_pct) }}%)
         </div>
       </div>
     </div>
@@ -68,13 +66,13 @@
     <!-- Charts -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
       <div class="bg-gray-900/70 border border-gray-700 rounded-xl shadow-lg p-6 flex flex-col">
-        <h3 class="text-lg font-semibold text-center text-white mb-4">Asset Distribution</h3>
+        <h2 class="text-lg font-semibold text-center text-white mb-4">Asset Distribution</h2>
         <div class="relative flex-grow" style="min-height: 400px;">
           <canvas id="distributionChart"></canvas>
         </div>
       </div>
       <div class="bg-gray-900/70 border border-gray-700 rounded-xl shadow-lg p-6 flex flex-col">
-        <h3 class="text-lg font-semibold text-center text-white mb-4">Portfolio Growth</h3>
+        <h2 class="text-lg font-semibold text-center text-white mb-4">Portfolio Growth</h2>
         <div class="relative flex-grow" style="min-height: 400px;">
           <canvas id="growthChart"></canvas>
         </div>
@@ -84,7 +82,7 @@
     <!-- Holdings table -->
     <div class="overflow-x-auto bg-gray-900/70 border border-gray-700 rounded-xl p-6">
       <table class="min-w-full divide-y divide-gray-700">
-        <thead class="bg-gray-800 text-gray-300">
+        <thead class="bg-gray-800 text-gray-200">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Symbol</th>
             <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Shares</th>
@@ -96,23 +94,23 @@
             <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Total P/L</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-700 text-gray-300">
+        <tbody class="divide-y divide-gray-700 text-gray-200">
           {% for holding in holdings %}
           <tr>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-white">
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
               <a href="/stock/{{ holding.symbol }}" class="text-indigo-400 hover:text-indigo-300 hover:underline">{{ holding.symbol }}</a>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm">{{ holding.shares | round(4) }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm">{{ holding.avg_price | usd }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm">{{ holding.price | usd }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm {% if holding.price_change_abs > 0 %}text-green-400{% elif holding.price_change_abs < 0 %}text-red-400{% else %}text-gray-300{% endif %}">
+            <td class="px-6 py-4 whitespace-nowrap text-sm {% if holding.price_change_abs > 0 %}text-green-400{% elif holding.price_change_abs < 0 %}text-red-400{% else %}text-gray-200{% endif %}">
               {{ holding.price_change_abs | usd }} ({{ "%.2f"|format(holding.price_change_pct) }}%)
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm {% if holding.daily_pl > 0 %}text-green-400{% elif holding.daily_pl < 0 %}text-red-400{% else %}text-gray-300{% endif %}">
+            <td class="px-6 py-4 whitespace-nowrap text-sm {% if holding.daily_pl > 0 %}text-green-400{% elif holding.daily_pl < 0 %}text-red-400{% else %}text-gray-200{% endif %}">
               {{ holding.daily_pl | usd }}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">{{ holding.total_value | usd }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold {% if holding.total_pl > 0 %}text-green-400{% elif holding.total_pl < 0 %}text-red-400{% else %}text-gray-300{% endif %}">
+            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ holding.total_value | usd }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm {% if holding.total_pl > 0 %}text-green-400{% elif holding.total_pl < 0 %}text-red-400{% else %}text-gray-200{% endif %}">
               {{ holding.total_pl | usd }} ({{ "%.2f"|format(holding.total_pl_pct) }}%)
             </td>
           </tr>
@@ -127,6 +125,8 @@
   <script id="chart-data" type="application/json">
     {{ chart_data_json | tojson | safe }}
   </script>
-  <script type="module" src="{{ url_for('static', filename='js/dashboard-charts.js', v=STATIC_VERSION) }}"></script>
+
+  <!-- Local Script -->
+  <script src="{{ url_for('static', filename='js/dashboard-chart.js', v=STATIC_VERSION) }}"></script>
 {% endif %}
 {% endblock %}
